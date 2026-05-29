@@ -1,13 +1,14 @@
 {
   "name": "Niche Research Coach",
   "short_name": "Niche Coach",
-  "start_url": "/",
+  "start_url": "/Niche-Selection-Coach/",
+  "scope": "/Niche-Selection-Coach/",
   "display": "standalone",
   "background_color": "#0F0820",
   "theme_color": "#892BE2",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "/Niche-Selection-Coach/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
