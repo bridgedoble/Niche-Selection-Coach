@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Niche Research Coach · AI Agency Institute</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0F0820;
+    --purple: #892BE2;
+    --purple-light: #A855F7;
+    --purple-dim: rgba(137, 43, 226, 0.15);
+    --yellow: #FFD601;
+    --yellow-dim: rgba(255, 214, 1, 0.12);
+    --card-bg: linear-gradient(135deg, #12092e 0%, #1a0d3d 100%);
+    --border: rgba(137, 43, 226, 0.25);
+    --text: #e8e0f8;
+    --text-dim: rgba(232, 224, 248, 0.55);
+    --header-h: 120px;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Background glows */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -180px; left: -180px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(137,43,226,0.18) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -120px; right: -120px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,214,1,0.08) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(15,8,32,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 14px 24px 10px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #892BE2, #5b0fa8);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 0 16px rgba(137,43,226,0.5);
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    display: flex; flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .brand-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--yellow);
+    text-transform: uppercase;
+  }
+
+  .brand-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .header-right {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  #step-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--purple-dim);
+    color: var(--purple-light);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+  }
+
+  #step-badge.complete {
+    background: var(--yellow-dim);
+    border-color: rgba(255,214,1,0.3);
+    color: var(--yellow);
+  }
+
+  .btn-reset {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-reset:hover {
+    border-color: var(--purple);
+    color: var(--purple-light);
+    background: var(--purple-dim);
+  }
+
+  /* ── PROGRESS TRACKER ── */
+  .progress-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .progress-track::-webkit-scrollbar { display: none; }
+
+  .step-item {
+    display: flex; align-items: center; gap: 0;
+    flex-shrink: 0;
+  }
+
+  .step-node {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+
+  .step-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(137,43,226,0.3);
+    background: rgba(137,43,226,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700;
+    color: var(--text-dim);
+    transition: all 0.35s ease;
+    flex-shrink: 0;
+  }
+
+  .step-circle.active {
+    border-color: var(--yellow);
+    background: rgba(255,214,1,0.12);
+    color: var(--yellow);
+    box-shadow: 0 0 10px rgba(255,214,1,0.3);
+  }
+
+  .step-circle.done {
+    border-color: var(--purple);
+    background: var(--purple);
+    color: #fff;
+  }
+
+  .step-label {
+    font-size: 8.5px;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-align: center;
+    max-width: 52px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s;
+  }
+
+  .step-label.active { color: var(--yellow); }
+  .step-label.done { color: var(--purple-light); }
+
+  .step-line {
+    width: 28px; height: 1.5px;
+    background: rgba(137,43,226,0.2);
+    margin: 0 3px;
+    margin-bottom: 14px;
+    transition: background 0.35s;
+    flex-shrink: 0;
+  }
+  .step-line.done { background: var(--purple); }
+
+  /* ── CHAT AREA ── */
+  #chat-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px 20px;
+    margin-top: var(--header-h);
+    scroll-behavior: smooth;
+    position: relative; z-index: 1;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(137,43,226,0.3) transparent;
+  }
+  #chat-wrap::-webkit-scrollbar { width: 4px; }
+  #chat-wrap::-webkit-scrollbar-track { background: transparent; }
+  #chat-wrap::-webkit-scrollbar-thumb {
+    background: rgba(137,43,226,0.35);
+    border-radius: 4px;
+  }
+
+  #messages { display: flex; flex-direction: column; gap: 16px; max-width: 760px; margin: 0 auto; }
+
+  /* ── BUBBLES ── */
+  .msg-row {
+    display: flex;
+    gap: 10px;
+    animation: popIn 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .msg-row.user { flex-direction: row-reverse; }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.92) translateY(6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .avatar.bot {
+    background: linear-gradient(135deg, #892BE2, #5b0fa8);
+    box-shadow: 0 0 12px rgba(137,43,226,0.45);
+  }
+
+  .avatar.user {
+    background: linear-gradient(135deg, #FFD601, #d4a800);
+    box-shadow: 0 0 12px rgba(255,214,1,0.3);
+  }
+
+  .bubble {
+    max-width: 72%;
+    padding: 13px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .bubble.bot {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px 18px 18px 18px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .bubble.user {
+    background: linear-gradient(135deg, #6d1fbe, #892BE2);
+    border-radius: 18px 4px 18px 18px;
+    box-shadow: 0 0 16px rgba(137,43,226,0.25);
+  }
+
+  /* Markdown rendering */
+  .bubble strong { color: var(--yellow); font-weight: 600; }
+  .bubble em { color: #c4a6f0; font-style: italic; }
+  .bubble p { margin-bottom: 8px; }
+  .bubble p:last-child { margin-bottom: 0; }
+  .bubble ul, .bubble ol { padding-left: 18px; margin: 8px 0; }
+  .bubble li { margin-bottom: 4px; }
+  .bubble h3, .bubble h4 {
+    color: var(--yellow);
+    font-size: 14px;
+    margin: 12px 0 6px;
+    font-weight: 600;
+  }
+  .bubble h3:first-child, .bubble h4:first-child { margin-top: 0; }
+
+  /* ── TYPING INDICATOR ── */
+  .typing-row {
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+
+  .typing-bubble {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px 18px 18px 18px;
+    padding: 14px 18px;
+    display: flex; gap: 5px; align-items: center;
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--purple);
+    animation: bounce 1.1s infinite ease-in-out;
+  }
+  .dot:nth-child(2) { animation-delay: 0.15s; }
+  .dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-7px); opacity: 1; }
+  }
+
+  /* ── ERROR BOX ── */
+  .error-box {
+    background: rgba(220,38,38,0.1);
+    border: 1px solid rgba(220,38,38,0.35);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #fca5a5;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* ── INPUT AREA ── */
+  #input-area {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(15,8,32,0.94);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    padding: 14px 20px 18px;
+    z-index: 100;
+  }
+
+  .input-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .input-row {
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+
+  textarea {
+    flex: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: rgba(137,43,226,0.07);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    padding: 10px 14px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.5;
+    min-height: 44px;
+    max-height: 120px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(137,43,226,0.3) transparent;
+  }
+  textarea::placeholder { color: var(--text-dim); }
+  textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(137,43,226,0.15);
+  }
+
+  #send-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #FFD601, #d4a800);
+    color: #1a0a00;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    min-width: 80px;
+    height: 44px;
+    flex-shrink: 0;
+    opacity: 0.4;
+  }
+  #send-btn:not(:disabled) { opacity: 1; }
+  #send-btn:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(255,214,1,0.35);
+  }
+  #send-btn:not(:disabled):active { transform: translateY(0); }
+
+  .input-hints {
+    display: flex; gap: 16px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .input-footer {
+    display: flex; justify-content: center;
+    font-size: 11px;
+    color: rgba(137,43,226,0.5);
+    letter-spacing: 0.03em;
+    padding-top: 2px;
+  }
+
+  .input-footer span { color: var(--purple); margin-right: 5px; font-size: 12px; }
+
+  /* Dynamic bottom padding for chat */
+  #chat-bottom-pad { height: 120px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        <span class="brand-label">AI Agency Institute</span>
+        <span class="brand-title">Niche Research Coach</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div id="step-badge">Step 1 of 7</div>
+      <button class="btn-reset" onclick="startOver()">Start Over</button>
+    </div>
+  </div>
+
+  <div class="progress-track" id="progress-track">
+    <!-- JS rendered -->
+  </div>
+</header>
+
+<div id="chat-wrap">
+  <div id="messages"></div>
+  <div id="chat-bottom-pad"></div>
+</div>
+
+<div id="input-area">
+  <div class="input-inner">
+    <div class="input-row">
+      <textarea id="user-input" rows="2" placeholder="Type your answer here…" oninput="handleInput(this)" onkeydown="handleKey(event)"></textarea>
+      <button id="send-btn" disabled onclick="sendMessage()">Send →</button>
+    </div>
+    <div class="input-hints">
+      <span>💬 Be specific — vague answers get vague niche matches</span>
+      <span>↵ Enter to send</span>
+    </div>
+    <div class="input-footer">
+      <span>⬡</span> 6 Figure AI Agency · AI Agency Institute
+    </div>
+  </div>
+</div>
+
+<script>
+const STEPS = ['Background','Network','Interests','Sales style','Goals','Niche match','Research plan'];
+
+const SYSTEM_PROMPT = `You are a niche selection coach for the 6 Figure AI Agency course by AI Agency Institute. You help students choose the perfect niche for their AI SMS and voice bot agency.
+
+You are warm, encouraging, direct, and practical. You ask one focused question at a time. You never overwhelm. You never use jargon.
+
+THE COURSE CONTEXT:
+Students are building an AI agency selling SMS bots (via Closebot) and voice bots (via Retell) that connect to GoHighLevel (CRM). These bots handle lead qualification and appointment booking for small-to-medium businesses (SMBs). They charge a setup fee ($1,500–$3,000) and a monthly retainer ($500–$1,500).
+
+The best niches are businesses that: get lots of inbound leads/calls, lose money from slow follow-up or missed calls, rely heavily on appointments and suffer from no-shows, benefit from 24/7 response, and have $500–$5,000+ average client value.
+
+Top proven niches: beauty/hair salons, dental/medical practices, real estate agents, mortgage brokers, personal injury lawyers, HVAC/plumbers/electricians, gyms, car dealerships, chiropractors, property managers.
+
+YOUR JOB: Run through a friendly conversation collecting info about their background, network, interests, sales comfort, and goals (6–8 questions), then deliver a personalised niche recommendation with a thorough research framework covering: core pain the niche has, ROI story, buying triggers, decision maker info, where to find prospects, top objections and rebuttals, and a 10-prospect research checklist. Always tie recommendations back to what they told you. End with 3 clear action steps for today.
+
+RULES: ONE question at a time. 2–4 sentences max per question. Be thorough and detailed when delivering the final recommendation.`;
+
+const WELCOME = `Hey there, future AI agency owner! 👋
+
+I'm your **Niche Research Coach** — here to help you find the perfect niche for your AI agency. One that fits *you*, not just whatever's trending.
+
+This is a conversation, not a quiz. I'll ask you a few focused questions, and by the end you'll walk away with a personalised niche recommendation and a complete research framework — who to target, what to say, and exactly where to find them.
+
+Let's start simple: **Tell me about your background — what have you done for work before this, and which industry have you spent the most time in?**`;
+
+let history = [];
+let currentStep = 1;
+let isLoading = false;
+
+function renderProgress() {
+  const track = document.getElementById('progress-track');
+  track.innerHTML = '';
+  STEPS.forEach((label, i) => {
+    const stepNum = i + 1;
+    const isDone = currentStep > stepNum;
+    const isActive = currentStep === stepNum;
+
+    const item = document.createElement('div');
+    item.className = 'step-item';
+
+    const node = document.createElement('div');
+    node.className = 'step-node';
+
+    const circle = document.createElement('div');
+    circle.className = `step-circle${isDone ? ' done' : isActive ? ' active' : ''}`;
+    circle.textContent = isDone ? '✓' : stepNum;
+
+    const lbl = document.createElement('div');
+    lbl.className = `step-label${isDone ? ' done' : isActive ? ' active' : ''}`;
+    lbl.textContent = label;
+
+    node.appendChild(circle);
+    node.appendChild(lbl);
+    item.appendChild(node);
+
+    if (i < STEPS.length - 1) {
+      const line = document.createElement('div');
+      line.className = `step-line${isDone ? ' done' : ''}`;
+      item.appendChild(line);
+    }
+
+    track.appendChild(item);
+  });
+
+  const badge = document.getElementById('step-badge');
+  if (currentStep >= 7) {
+    badge.textContent = '✦ Niche Match Ready';
+    badge.classList.add('complete');
+  } else {
+    badge.textContent = `Step ${currentStep} of 7`;
+    badge.classList.remove('complete');
+  }
+}
+
+function parseMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>(\n|$))+/g, m => `<ul>${m}</ul>`)
+    .replace(/\n\n+/g, '</p><p>')
+    .replace(/^(?!<[hul])(.+)$/gm, (m) => m.trim() ? m : '')
+    .replace(/(<p><\/p>)+/g, '')
+    .replace(/\n/g, '<br>');
+}
+
+function addMessage(role, text) {
+  const msgs = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = `avatar ${role}`;
+  avatar.textContent = role === 'bot' ? '⚡' : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${role}`;
+
+  const wrapped = `<p>${parseMarkdown(text)}</p>`;
+  bubble.innerHTML = wrapped;
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  msgs.appendChild(row);
+  scrollBottom();
+}
+
+function showTyping() {
+  const msgs = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'typing-row';
+  row.id = 'typing-indicator';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar bot';
+  avatar.textContent = '⚡';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'typing-bubble';
+  bubble.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+
+  row.appendChild(avatar);
+  row.appendChild(bubble);
+  msgs.appendChild(row);
+  scrollBottom();
+}
+
+function hideTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function showError(msg) {
+  const msgs = document.getElementById('messages');
+  const box = document.createElement('div');
+  box.className = 'error-box';
+  box.textContent = '⚠ ' + msg;
+  msgs.appendChild(box);
+  scrollBottom();
+}
+
+function scrollBottom() {
+  const wrap = document.getElementById('chat-wrap');
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function handleInput(el) {
+  const btn = document.getElementById('send-btn');
+  btn.disabled = el.value.trim() === '' || isLoading;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!document.getElementById('send-btn').disabled) sendMessage();
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  isLoading = true;
+
+  addMessage('user', text);
+  history.push({ role: 'user', content: text });
+
+  if (currentStep < 7) currentStep++;
+  renderProgress();
+
+  showTyping();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: history
+      })
+    });
+
+    const data = await res.json();
+    hideTyping();
+
+    if (!res.ok) {
+      showError(data?.error?.message || 'API error. Please try again.');
+    } else {
+      const reply = data.content?.find(b => b.type === 'text')?.text || '';
+      addMessage('bot', reply);
+      history.push({ role: 'assistant', content: reply });
+    }
+  } catch (err) {
+    hideTyping();
+    showError('Network error: ' + err.message);
+  }
+
+  isLoading = false;
+  const inputEl = document.getElementById('user-input');
+  inputEl.disabled = false;
+  document.getElementById('send-btn').disabled = inputEl.value.trim() === '';
+}
+
+function startOver() {
+  history = [];
+  currentStep = 1;
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('user-input').value = '';
+  document.getElementById('user-input').style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  renderProgress();
+  addMessage('bot', WELCOME);
+}
+
+// Init
+renderProgress();
+addMessage('bot', WELCOME);
+
+// Adjust chat margin dynamically
+function adjustLayout() {
+  const headerH = document.querySelector('header').offsetHeight;
+  const inputH = document.getElementById('input-area').offsetHeight;
+  document.getElementById('chat-wrap').style.marginTop = headerH + 'px';
+  document.getElementById('chat-bottom-pad').style.height = (inputH + 16) + 'px';
+}
+window.addEventListener('resize', adjustLayout);
+adjustLayout();
+</script>
+</body>
+</html>
