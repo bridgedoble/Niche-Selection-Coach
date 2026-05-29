@@ -1,2 +1,2 @@
-# Niche-Selection-Coach
-Niche Selection Coach
+# Niche-Research-Coach
+Niche Research Coach
